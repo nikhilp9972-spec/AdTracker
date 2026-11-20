@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdPulse Intelligence • EdTech Competitor Ad Tracking & AI Engine</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#090a10',
+                            800: '#0f111d',
+                            700: '#171a2e',
+                            600: '#212642',
+                            500: '#2f365f'
+                        },
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="min-h-screen font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- Top Header Navigation -->
+        <header class="sticky top-0 z-40 border-b border-slate-200 dark:border-dark-600/60 bg-white/90 dark:bg-dark-900/90 backdrop-blur-xl">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <!-- Brand Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 shadow-md shadow-brand-500/20 text-white">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">AdPulse <span class="text-brand-600 dark:text-brand-400">Intelligence</span></h1>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-500/20">EdTech</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">Automated Competitor Ad Tracking & AI Strategy Engine</p>
+                    </div>
+                </div>
+
+                <!-- Center Scheduler Countdown Pill -->
+                <div id="scheduler-pill" class="hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-dark-800 border border-slate-200 dark:border-dark-600/60 text-xs text-slate-600 dark:text-slate-300">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-slate-400">Cadence:</span>
+                    <span id="next-run-text" class="font-semibold text-emerald-600 dark:text-emerald-400">Every Monday 9:00 AM</span>
+                </div>
+
+                <!-- Right Quick Actions -->
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <!-- Manual Verified Import Button -->
+                    <button onclick="openManualImportModal()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-dark-800 dark:hover:bg-dark-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-dark-600 transition-colors" title="Import Verified Real Ad">
+                        <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-brand-600 dark:text-brand-400"></i>
+                        <span class="hidden sm:inline">Import Ad</span>
+                    </button>
+
+                    <!-- Run Audit Now Button -->
+                    <button id="btn-run-pipeline" onclick="triggerPipelineRun()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]">
+                        <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-300"></i>
+                        <span>Run Scan</span>
+                    </button>
+
+                    <!-- Settings Button -->
+                    <button onclick="openSettingsModal()" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-dark-800 dark:hover:bg-dark-700 border border-slate-200 dark:border-dark-600 text-slate-600 dark:text-slate-300 transition-colors" title="Settings & Integrations">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                    </button>
+
+                    <!-- Theme Toggle -->
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-dark-800 dark:hover:bg-dark-700 border border-slate-200 dark:border-dark-600 text-slate-600 dark:text-slate-300 transition-colors" title="Toggle Dark/Light Mode">
+                        <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Primary Navigation Bar (8 Views) -->
+            <div class="border-t border-slate-200 dark:border-dark-600/60 bg-slate-50/70 dark:bg-dark-900/60">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto scrollbar-none py-1">
+                        <button onclick="switchTab('overview')" id="tab-btn-overview" class="tab-button active flex items-center space-x-1.5 px-3 py-2 rounded-md text-xs font-semibold">
+                            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+                            <span>Overview</span>
+                        </button>
+                        <button onclick="switchTab('competitors')" id="tab-btn-competitors" class="tab-button flex items-center space-x-1.5 px-3 py-2 rounded-md text-xs font-medium">
+                            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+                            <span>Competitors</span>
+                        </button>
+                        <button onclick="switchTab('vault')" id="tab-btn-vault" class="tab-button flex items-center space-x-1.5 px-3 py-2 rounded-md text-xs font-medium">
+                            <i data-lucide="grid" class="w-3.5 h-3.5"></i>
+                            <span>Ad Library</span>
+                        </button>
+                        <button onclick="switchTab('cross-platform')" id="tab-btn-cross-platform" class="tab-button flex items-center space-x-1.5 px-3 py-2 rounded-md text-xs font-medium">
+                            <i data-lucide="split" class="w-3.5 h-3.5 text-brand-600 dark:text-brand-400"></i>
+                            <span>Cross-Platform (Meta vs Google)</span>
+                        </button>
+                        <button onclick="switchTab('insights')" id="tab-btn-insights" class="tab-button flex items-center space-x-1.5 px-3 py-2 rounded-md text-xs font-medium">
+                            <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400"></i>
+                            <span>Creative Insights</span>
+                        </button>
+                        <button onclick="switchTab('reports')" id="tab-btn-reports" class="tab-button flex items-center space-x-1.5 px-3 py-2 rounded-md text-xs font-medium">
+                            <i data-lucide="file-text" class="w-3.5 h-3.5 text-amber-500"></i>
+                            <span>Intelligence Reports</span>
+                        </button>
+                        <button onclick="switchTab('automation')" id="tab-btn-automation" class="tab-button flex items-center space-x-1.5 px-3 py-2 rounded-md text-xs font-medium">
+                            <i data-lucide="clock" class="w-3.5 h-3.5 text-emerald-500"></i>
+                            <span>Automation & Logs</span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+            <!-- ================= VIEW 1: OVERVIEW ================= -->
+            <section id="tab-content-overview" class="space-y-6">
+                <!-- KPI Stats Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Stat Card 1 -->
+                    <div class="glass-card p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+                            <span class="text-xs font-semibold uppercase tracking-wider">Monitored EdTech Brands</span>
+                            <div class="p-1.5 rounded-md bg-indigo-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-baseline justify-between">
+                            <div class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white" id="stat-competitors-count">3 Active</div>
+                            <div class="flex -space-x-1.5" id="stat-competitor-avatars"></div>
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 truncate" id="stat-competitor-names">Physics Wallah, Unacademy, Scaler</div>
+                    </div>
+
+                    <!-- Stat Card 2 -->
+                    <div class="glass-card p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+                            <span class="text-xs font-semibold uppercase tracking-wider">EdTech Ads Monitored</span>
+                            <div class="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                                <i data-lucide="layers" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-baseline justify-between">
+                            <div class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white" id="stat-ads-count">--</div>
+                            <span class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center">
+                                <i data-lucide="check-circle" class="w-3 h-3 mr-1"></i> Transparent
+                            </span>
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500 dark:text-slate-400" id="stat-platform-split">Across Meta & Google Ads</div>
+                    </div>
+
+                    <!-- Stat Card 3 -->
+                    <div class="glass-card p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+                            <span class="text-xs font-semibold uppercase tracking-wider">Top Course Category</span>
+                            <div class="p-1.5 rounded-md bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+                                <i data-lucide="book-open" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <div class="text-lg font-bold tracking-tight text-slate-900 dark:text-white truncate" id="stat-top-category">Data Science & AI</div>
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 truncate" id="stat-top-hook">Hook: 126% Avg Salary Hike</div>
+                    </div>
+
+                    <!-- Stat Card 4 -->
+                    <div class="glass-card p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+                            <span class="text-xs font-semibold uppercase tracking-wider">Delivery Channels</span>
+                            <div class="p-1.5 rounded-md bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center space-x-2">
+                            <span id="badge-slack-status" class="inline-flex items-center space-x-1 text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-dark-700 text-slate-600 dark:text-slate-300">
+                                <i data-lucide="hash" class="w-3 h-3 text-emerald-500"></i>
+                                <span>Slack</span>
+                            </span>
+                            <span id="badge-email-status" class="inline-flex items-center space-x-1 text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-dark-700 text-slate-600 dark:text-slate-300">
+                                <i data-lucide="mail" class="w-3 h-3 text-emerald-500"></i>
+                                <span>Email</span>
+                            </span>
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500 dark:text-slate-400" id="stat-last-dispatch">Automated Delivery Ready</div>
+                    </div>
+                </div>
+
+                <!-- Competitors Quick Status Row -->
+                <div class="glass-card p-5 rounded-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-600/60 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                                <i data-lucide="swords" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
+                                <span>Active EdTech Competitor Fleet</span>
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Default 3 brands (Physics Wallah, Unacademy, Scaler) — expandable to any EdTech company</p>
+                        </div>
+                        <button onclick="switchTab('competitors')" class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center space-x-1">
+                            <span>Manage Brands</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                    <div id="overview-competitors-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- Cross-Platform & Executive Digest Snapshot -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left: Latest Digest Callout -->
+                    <div class="lg:col-span-2 glass-card p-5 rounded-xl space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-600/60 pb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 flex items-center space-x-1.5">
+                                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                                <span>Weekly AI Executive Summary</span>
+                            </span>
+                            <button onclick="switchTab('reports')" class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+                                Full 7-Section Report →
+                            </button>
+                        </div>
+                        <p id="overview-exec-summary" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                            Loading weekly competitive briefing...
+                        </p>
+                        <div id="overview-top-hooks" class="flex flex-wrap gap-1.5 pt-2">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Right: Cross-Platform Meta vs Google Glance -->
+                    <div class="glass-card p-5 rounded-xl space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-600/60 pb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                                <i data-lucide="split" class="w-3.5 h-3.5 text-brand-600 dark:text-brand-400"></i>
+                                <span>Meta vs Google Share</span>
+                            </span>
+                            <button onclick="switchTab('cross-platform')" class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+                                Deep Dive →
+                            </button>
+                        </div>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-500">Meta Ad Library:</span>
+                                <span class="font-bold text-slate-900 dark:text-white" id="overview-meta-count">--</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-dark-700 h-2 rounded-full overflow-hidden">
+                                <div id="overview-meta-bar" class="bg-blue-500 h-full rounded-full" style="width: 50%"></div>
+                            </div>
+                            <div class="flex items-center justify-between pt-1">
+                                <span class="text-slate-500">Google Ads & Discover:</span>
+                                <span class="font-bold text-slate-900 dark:text-white" id="overview-google-count">--</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-dark-700 h-2 rounded-full overflow-hidden">
+                                <div id="overview-google-bar" class="bg-red-500 h-full rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-[11px] text-emerald-800 dark:text-emerald-300">
+                            <strong>Google Discover Verified:</strong> Placements classified strictly when confirmed via Transparency Center logs.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Latest Monitored Creatives Feed -->
+                <div class="glass-card p-5 rounded-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-600/60 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                                <i data-lucide="grid" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
+                                <span>Latest EdTech Creatives Monitored</span>
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Real advertising copy and offers captured from competitor campaigns</p>
+                        </div>
+                        <button onclick="switchTab('vault')" class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+                            Open Full Ad Vault →
+                        </button>
+                    </div>
+                    <div id="overview-recent-ads-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW 2: COMPETITORS ================= -->
+            <section id="tab-content-competitors" class="space-y-6 hidden">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-white">EdTech Competitor Management</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Defaulted to Physics Wallah (PW), Unacademy, and Scaler. Add or customize with any EdTech competitor.</p>
+                    </div>
+                    <button onclick="openAddCompetitorModal()" class="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white shadow-sm">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>Add EdTech Competitor</span>
+                    </button>
+                </div>
+
+                <div id="competitors-list-grid" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </section>
+
+            <!-- ================= VIEW 3: AD LIBRARY (VAULT) ================= -->
+            <section id="tab-content-vault" class="space-y-5 hidden">
+                <!-- Filter Toolbar -->
+                <div class="glass-card p-4 rounded-xl space-y-3">
+                    <!-- Row 1: Search & Fetch -->
+                    <div class="flex flex-col sm:flex-row gap-2.5">
+                        <div class="relative flex-1">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="vault-search-input" oninput="filterAds()" placeholder="Search headlines, hooks, courses (e.g. Data Science, JEE, Scholarship)..." class="w-full bg-slate-50 dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brand-500">
+                        </div>
+                        <button onclick="triggerCollectAds()" class="inline-flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-dark-700 dark:hover:bg-dark-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-dark-600 transition-colors">
+                            <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
+                            <span>Collect Fresh Ads</span>
+                        </button>
+                    </div>
+
+                    <!-- Row 2: Comprehensive EdTech Filter Selects -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+                        <!-- Competitor -->
+                        <select id="vault-filter-comp" onchange="filterAds()" class="text-xs bg-slate-50 dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-slate-800 dark:text-slate-200">
+                            <option value="">All Brands</option>
+                        </select>
+
+                        <!-- Course Category (22 EdTech Categories) -->
+                        <select id="vault-filter-category" onchange="filterAds()" class="text-xs bg-slate-50 dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-slate-800 dark:text-slate-200">
+                            <option value="">All Categories</option>
+                            <option value="Online Courses">Online Courses</option>
+                            <option value="Coding">Coding</option>
+                            <option value="Software Development">Software Development</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Artificial Intelligence">Artificial Intelligence</option>
+                            <option value="JEE Preparation">JEE Preparation</option>
+                            <option value="NEET Preparation">NEET Preparation</option>
+                            <option value="UPSC Preparation">UPSC Preparation</option>
+                            <option value="Government Exams">Government Exams</option>
+                            <option value="Banking Exams">Banking Exams</option>
+                            <option value="MBA and Management">MBA & Management</option>
+                            <option value="CAT Preparation">CAT Preparation</option>
+                            <option value="Study Abroad">Study Abroad</option>
+                            <option value="Language Learning">Language Learning</option>
+                            <option value="Career Development">Career Development</option>
+                            <option value="Job Placement">Job Placement</option>
+                            <option value="Internship">Internship</option>
+                            <option value="Professional Certification">Certification</option>
+                            <option value="Bootcamp">Bootcamp</option>
+                            <option value="College Admissions">College Admissions</option>
+                            <option value="Skill Development">Skill Development</option>
+                        </select>
+
+                        <!-- Platform -->
+                        <select id="vault-filter-platform" onchange="filterAds()" class="text-xs bg-slate-50 dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-slate-800 dark:text-slate-200">
+                            <option value="all">All Channels</option>
+                            <option value="meta">Meta / Instagram</option>
+                            <option value="google">Google Ads</option>
+                        </select>
+
+                        <!-- Google Placement -->
+                        <select id="vault-filter-placement" onchange="filterAds()" class="text-xs bg-slate-50 dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-slate-800 dark:text-slate-200">
+                            <option value="all">All Placements</option>
+                            <option value="Google Discover">Verified Discover</option>
+                            <option value="Demand Gen">Demand Gen</option>
+                            <option value="YouTube">YouTube</option>
+                            <option value="Search">Search</option>
+                            <option value="Display">Display</option>
+                            <option value="Google Ad – Placement Unknown">Placement Unknown</option>
+                        </select>
+
+                        <!-- Offer Type -->
+                        <select id="vault-filter-offer" onchange="filterAds()" class="text-xs bg-slate-50 dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-slate-800 dark:text-slate-200">
+                            <option value="all">All Offers</option>
+                            <option value="Free Masterclass">Free Masterclass</option>
+                            <option value="Free Demo">Free Demo / Trial</option>
+                            <option value="Discount">Discounts</option>
+                            <option value="Scholarship">Scholarship Test</option>
+                            <option value="EMI">No Cost EMI</option>
+                        </select>
+
+                        <!-- Transparency Filter -->
+                        <select id="vault-filter-transparency" onchange="filterAds()" class="text-xs bg-slate-50 dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-slate-800 dark:text-slate-200">
+                            <option value="all">All Sources</option>
+                            <option value="live">Live Verified Real Ads</option>
+                            <option value="demo">Benchmark / Demo Ads</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Ad Cards Grid -->
+                <div id="vault-ads-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </section>
+
+            <!-- ================= VIEW 4: CROSS-PLATFORM (META VS GOOGLE) ================= -->
+            <section id="tab-content-cross-platform" class="space-y-6 hidden">
+                <div class="glass-card p-6 rounded-xl space-y-5">
+                    <div class="border-b border-slate-100 dark:border-dark-600/60 pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <div>
+                            <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 mb-1.5">
+                                <i data-lucide="split" class="w-3.5 h-3.5"></i>
+                                <span>Multi-Channel Intelligence</span>
+                            </div>
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white">Cross-Platform Intelligence: Meta vs Google Ads</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Comparing creative strategies, placements (Discover, Demand Gen, Search), and offers across ad networks.</p>
+                        </div>
+                        <button onclick="loadCrossPlatformData()" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-dark-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-dark-600">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                            <span>Refresh Cross-Platform</span>
+                        </button>
+                    </div>
+
+                    <!-- Comparison KPI Cards -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="p-3.5 rounded-lg bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/40">
+                            <span class="text-[11px] font-semibold text-blue-700 dark:text-blue-400 block">Meta Ad Library</span>
+                            <div class="text-xl font-bold text-blue-900 dark:text-blue-200 mt-1" id="cp-meta-count">--</div>
+                            <span class="text-[10px] text-slate-500">Visual Reels & Social Feed</span>
+                        </div>
+                        <div class="p-3.5 rounded-lg bg-red-50/60 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40">
+                            <span class="text-[11px] font-semibold text-red-700 dark:text-red-400 block">Google Total Ads</span>
+                            <div class="text-xl font-bold text-red-900 dark:text-red-200 mt-1" id="cp-google-count">--</div>
+                            <span class="text-[10px] text-slate-500">Transparency Center Creatives</span>
+                        </div>
+                        <div class="p-3.5 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40">
+                            <span class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 block">Verified Google Discover</span>
+                            <div class="text-xl font-bold text-emerald-900 dark:text-emerald-200 mt-1" id="cp-discover-count">--</div>
+                            <span class="text-[10px] text-slate-500">Feed Cards (Verified Placements)</span>
+                        </div>
+                        <div class="p-3.5 rounded-lg bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40">
+                            <span class="text-[11px] font-semibold text-amber-700 dark:text-amber-400 block">Google Search & Intent</span>
+                            <div class="text-xl font-bold text-amber-900 dark:text-amber-200 mt-1" id="cp-search-count">--</div>
+                            <span class="text-[10px] text-slate-500">High-Intent Keyword Ads</span>
+                        </div>
+                    </div>
+
+                    <!-- Strategic Channel Comparison Matrix -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Meta Strategic Card -->
+                        <div class="p-4 rounded-xl border border-slate-200 dark:border-dark-600 bg-slate-50/50 dark:bg-dark-800/50 space-y-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded text-xs font-bold bg-blue-600 text-white">META</span>
+                                <h4 class="font-bold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300">Instagram & Facebook Feed Strategy</h4>
+                            </div>
+                            <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1.5 list-disc pl-4">
+                                <li><strong>Creative Style:</strong> Student vlogs, emotional parent testimonials, dramatic salary reveal videos, and faculty authority reels.</li>
+                                <li><strong>Audience Mindset:</strong> Passive discovery; browsing for entertainment or peer validation. High reliance on visual social proof.</li>
+                                <li><strong>Primary Lead Magnet:</strong> Free live masterclasses, downloadable AI roadmaps, and doubt-solving apps.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Google Strategic Card -->
+                        <div class="p-4 rounded-xl border border-slate-200 dark:border-dark-600 bg-slate-50/50 dark:bg-dark-800/50 space-y-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded text-xs font-bold bg-red-600 text-white">GOOGLE</span>
+                                <h4 class="font-bold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300">Discover, Demand Gen & Search Strategy</h4>
+                            </div>
+                            <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1.5 list-disc pl-4">
+                                <li><strong>Creative Style:</strong> Clean banner cards, syllabus comparison guides, and urgent search copy highlighting batch deadlines.</li>
+                                <li><strong>Audience Mindset:</strong> High intent query-based search or interest-based news feed browsing (Google Discover).</li>
+                                <li><strong>Primary Lead Magnet:</strong> Direct enrollment bookings, scholarship entrance exams, and syllabus downloads.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Placements Breakdown Table -->
+                    <div class="border border-slate-200 dark:border-dark-600 rounded-xl overflow-hidden">
+                        <div class="p-3 bg-slate-100 dark:bg-dark-700 border-b border-slate-200 dark:border-dark-600 font-bold text-xs text-slate-700 dark:text-slate-200">
+                            Google Placements Audit & Integrity Status
+                        </div>
+                        <div class="p-4 text-xs text-slate-600 dark:text-slate-300 space-y-2">
+                            <p><strong>Google Discover Placement Integrity:</strong> Google Discover is a native content feed on mobile devices. Placements are tagged as <code>Google Discover</code> only when verified through Transparency Center creative telemetry. Unverified campaign creatives are categorized under <code>Google Ad – Placement Unknown</code> or <code>Demand Gen</code>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW 5: CREATIVE INSIGHTS ================= -->
+            <section id="tab-content-insights" class="space-y-6 hidden">
+                <div class="glass-card p-6 rounded-xl space-y-6">
+                    <div class="border-b border-slate-100 dark:border-dark-600/60 pb-3">
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-white">EdTech Marketing Insights & Creative Strategy</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Synthesis of dominant course categories, marketing hooks, value propositions, and messaging opportunities.</p>
+                    </div>
+
+                    <!-- Grid: Categories & Hooks -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Top Promoted Course Categories -->
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                Most Frequently Promoted Course Categories
+                            </h3>
+                            <div id="insights-categories-bars" class="space-y-2.5">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Dominant Marketing Hooks Across Competitors -->
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                Dominant Marketing Hooks Extracted From Real Ads
+                            </h3>
+                            <div id="insights-hooks-list" class="space-y-2">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid: Offers & Value Propositions -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-100 dark:border-dark-600/60">
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-dark-800/60 border border-slate-200 dark:border-dark-600 space-y-2">
+                            <span class="text-xs font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">Active Promotional Offers</span>
+                            <ul id="insights-offers-list" class="text-xs text-slate-600 dark:text-slate-300 space-y-1.5 list-disc pl-4">
+                                <!-- Populated dynamically -->
+                            </ul>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-dark-800/60 border border-slate-200 dark:border-dark-600 space-y-2">
+                            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Promised Value Propositions</span>
+                            <ul id="insights-value-props-list" class="text-xs text-slate-600 dark:text-slate-300 space-y-1.5 list-disc pl-4">
+                                <!-- Populated dynamically -->
+                            </ul>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-dark-800/60 border border-slate-200 dark:border-dark-600 space-y-2">
+                            <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Creative Opportunities (AI)</span>
+                            <ul id="insights-opportunities-list" class="text-xs text-slate-600 dark:text-slate-300 space-y-1.5 list-disc pl-4">
+                                <!-- Populated dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW 6: INTELLIGENCE REPORTS (7 SECTIONS) ================= -->
+            <section id="tab-content-reports" class="space-y-6 hidden">
+                <div class="glass-card p-6 sm:p-8 rounded-xl space-y-6">
+                    <!-- Report Header Bar -->
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 dark:border-dark-600/60 pb-5">
+                        <div>
+                            <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 mb-2">
+                                <i data-lucide="file-check" class="w-3.5 h-3.5"></i>
+                                <span>Weekly AI Intelligence Synthesis</span>
+                            </div>
+                            <h2 id="report-title" class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                                EdTech Competitor Ad Intelligence Brief
+                            </h2>
+                            <p id="report-period" class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                Monitored Period: Past 7 Days
+                            </p>
+                        </div>
+
+                        <!-- One-Click Dispatch Buttons -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button onclick="dispatchToSlack()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#4A154B] hover:bg-[#611f69] text-white shadow-sm">
+                                <i data-lucide="hash" class="w-3.5 h-3.5"></i>
+                                <span>Send to Slack</span>
+                            </button>
+                            <button onclick="dispatchToEmail()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm">
+                                <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+                                <span>Send Email</span>
+                            </button>
+                            <button onclick="openSlackPreview()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-dark-800 dark:hover:bg-dark-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-dark-600" title="Preview Slack Block Kit">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="openEmailPreview()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-dark-800 dark:hover:bg-dark-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-dark-600" title="Preview HTML Email">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="regenerateDigest()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-dark-800 dark:hover:bg-dark-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-dark-600" title="Re-synthesize Digest">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Digest Selector Dropdown -->
+                    <div class="flex items-center space-x-2 text-xs">
+                        <span class="text-slate-500">Historical Digests:</span>
+                        <select id="digest-archive-select" onchange="onDigestSelectChange(this.value)" class="text-xs bg-slate-50 dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1 text-slate-800 dark:text-slate-200">
+                            <option value="latest">Latest Intelligence Brief</option>
+                        </select>
+                    </div>
+
+                    <!-- ================= 7-SECTION REPORT STRUCTURE ================= -->
+
+                    <!-- Section 1: Executive Summary -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-dark-800/80 border border-brand-200 dark:border-brand-500/20 space-y-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+                            Section 1: Executive Summary
+                        </span>
+                        <p id="report-exec-summary" class="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
+                            Loading executive summary...
+                        </p>
+                    </div>
+
+                    <!-- Section 2: Competitor-Wise Analysis -->
+                    <div class="space-y-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+                            Section 2: Competitor-Wise Analysis (Physics Wallah, Unacademy, Scaler)
+                        </span>
+                        <div id="report-competitors-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Section 3: EdTech Market Messaging Trends -->
+                    <div class="space-y-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+                            Section 3: EdTech Market Messaging Trends
+                        </span>
+                        <div id="report-market-trends" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Creative Intelligence -->
+                    <div class="space-y-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+                            Section 4: Creative Intelligence (Hooks, Patterns, Angles)
+                        </span>
+                        <div id="report-creative-intel" class="p-4 rounded-xl bg-slate-50 dark:bg-dark-800/60 border border-slate-200 dark:border-dark-600 space-y-2 text-xs">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Opportunities for Our Marketing Team -->
+                    <div class="space-y-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block">
+                            Section 5: Opportunities For Our Marketing Team (AI-Generated Suggestions)
+                        </span>
+                        <div id="report-opportunities" class="space-y-2">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Section 6: Cross-Platform Meta vs Google -->
+                    <div class="space-y-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+                            Section 6: Cross-Platform Meta vs Google Intelligence
+                        </span>
+                        <div id="report-cross-platform-intel" class="p-4 rounded-xl bg-slate-50 dark:bg-dark-800/60 border border-slate-200 dark:border-dark-600 text-xs text-slate-700 dark:text-slate-300">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Section 7: Source References & Real Ad Links -->
+                    <div class="space-y-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+                            Section 7: Source References & Real Ad Library Links
+                        </span>
+                        <div id="report-source-links" class="overflow-x-auto border border-slate-200 dark:border-dark-600 rounded-xl">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-100 dark:bg-dark-700 text-slate-500 uppercase tracking-wider font-semibold">
+                                    <tr>
+                                        <th class="py-2.5 px-3">Brand</th>
+                                        <th class="py-2.5 px-3">Headline</th>
+                                        <th class="py-2.5 px-3">Platform</th>
+                                        <th class="py-2.5 px-3">Category</th>
+                                        <th class="py-2.5 px-3">Ad Link</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-source-tbody" class="divide-y divide-slate-100 dark:divide-dark-600 text-slate-700 dark:text-slate-300">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW 7: AUTOMATION & LOGS ================= -->
+            <section id="tab-content-automation" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Scheduler Configuration Card -->
+                    <div class="glass-card p-5 rounded-xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-600/60 pb-3">
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                                <i data-lucide="clock" class="w-4 h-4 text-emerald-500"></i>
+                                <span>Weekly Automation Scheduler</span>
+                            </h3>
+                            <span id="automation-pill-status" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">Active</span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            AdPulse executes automatically every Monday at 9:00 AM: fetches real advertisements from PW, Unacademy, and Scaler, classifies categories, synthesizes AI intelligence, and posts to Slack and Email.
+                        </p>
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div>
+                                <label class="text-[11px] text-slate-400 block mb-1">Cadence Day</label>
+                                <span class="text-xs font-bold text-slate-800 dark:text-slate-200" id="auto-cadence-day">Monday</span>
+                            </div>
+                            <div>
+                                <label class="text-[11px] text-slate-400 block mb-1">Execution Time</label>
+                                <span class="text-xs font-bold text-slate-800 dark:text-slate-200" id="auto-cadence-time">09:00 AM (IST)</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 pt-2">
+                            <button onclick="triggerPipelineRun()" class="px-3.5 py-2 rounded-lg text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white shadow-sm">
+                                Trigger Full Audit Now 🚀
+                            </button>
+                            <button onclick="openSettingsModal()" class="px-3.5 py-2 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-dark-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-dark-600">
+                                Edit Cadence
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Channel Status Card -->
+                    <div class="glass-card p-5 rounded-xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-600/60 pb-3">
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                                <i data-lucide="send" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
+                                <span>Delivery Channels Status</span>
+                            </h3>
+                        </div>
+                        <div class="space-y-3">
+                            <!-- Slack status -->
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-dark-800/60 border border-slate-200 dark:border-dark-600">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-7 h-7 rounded bg-[#4A154B] flex items-center justify-center text-white text-xs">
+                                        <i data-lucide="hash" class="w-3.5 h-3.5"></i>
+                                    </div>
+                                    <div>
+                                        <strong class="text-xs text-slate-800 dark:text-slate-200 block">Slack Webhook</strong>
+                                        <span class="text-[10px] text-slate-400">#marketing-intelligence</span>
+                                    </div>
+                                </div>
+                                <button onclick="testSlackWebhook()" class="px-2.5 py-1 rounded text-[11px] font-semibold bg-slate-200 dark:bg-dark-700 hover:bg-slate-300 text-slate-700 dark:text-slate-200">
+                                    Test Ping
+                                </button>
+                            </div>
+
+                            <!-- Email status -->
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-dark-800/60 border border-slate-200 dark:border-dark-600">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-7 h-7 rounded bg-indigo-600 flex items-center justify-center text-white text-xs">
+                                        <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+                                    </div>
+                                    <div>
+                                        <strong class="text-xs text-slate-800 dark:text-slate-200 block">Email Newsletter</strong>
+                                        <span class="text-[10px] text-slate-400">Weekly SMTP Dispatch</span>
+                                    </div>
+                                </div>
+                                <button onclick="testEmailSMTP()" class="px-2.5 py-1 rounded text-[11px] font-semibold bg-slate-200 dark:bg-dark-700 hover:bg-slate-300 text-slate-700 dark:text-slate-200">
+                                    Test SMTP
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-Time Collection Audit Logs Table -->
+                <div class="glass-card p-5 rounded-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-600/60 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                                <i data-lucide="shield" class="w-4 h-4 text-emerald-500"></i>
+                                <span>Real Data Collection Audit Logs (Strict Transparency)</span>
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Verifiable trace of every API request, timestamp, competitor retrieved, and error report.</p>
+                        </div>
+                        <button onclick="loadCollectionLogs()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-dark-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-dark-600" title="Refresh Collection Logs">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 dark:bg-dark-700 text-slate-500 uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="py-2.5 px-3">Timestamp</th>
+                                    <th class="py-2.5 px-3">Competitor</th>
+                                    <th class="py-2.5 px-3">Data Source</th>
+                                    <th class="py-2.5 px-3">Ads Retrieved</th>
+                                    <th class="py-2.5 px-3">Status</th>
+                                    <th class="py-2.5 px-3">Details / API Trace</th>
+                                </tr>
+                            </thead>
+                            <tbody id="collection-logs-tbody" class="divide-y divide-slate-100 dark:divide-dark-600 text-slate-700 dark:text-slate-300">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Notification Audit Logs Table -->
+                <div class="glass-card p-5 rounded-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-600/60 pb-3">
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                            <i data-lucide="history" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
+                            <span>Notification Delivery History</span>
+                        </h3>
+                        <button onclick="loadNotificationLogs()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-dark-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-dark-600">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 dark:bg-dark-700 text-slate-500 uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="py-2.5 px-3">Channel</th>
+                                    <th class="py-2.5 px-3">Recipient</th>
+                                    <th class="py-2.5 px-3">Status</th>
+                                    <th class="py-2.5 px-3">Dispatched At</th>
+                                    <th class="py-2.5 px-3">Error / Note</th>
+                                </tr>
+                            </thead>
+                            <tbody id="notification-logs-tbody" class="divide-y divide-slate-100 dark:divide-dark-600 text-slate-700 dark:text-slate-300">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-auto border-t border-slate-200 dark:border-dark-600/60 py-4 text-center text-xs text-slate-500">
+            <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+                <p>AdPulse Intelligence • EdTech Competitor Ad Tracking & AI System</p>
+                <p>Monitors Physics Wallah, Unacademy, Scaler & Custom EdTech Brands</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ================= MODALS & PREVIEWS ================= -->
+
+    <!-- Settings Modal -->
+    <div id="modal-settings" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-2xl max-w-xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('modal-settings')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1 flex items-center space-x-2">
+                <i data-lucide="settings" class="w-5 h-5 text-brand-600 dark:text-brand-400"></i>
+                <span>Configuration & Integrations</span>
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-5">Configure Meta Ad Library Token, Google Transparency, Slack webhooks, and SMTP.</p>
+
+            <form id="settings-form" onsubmit="saveSettings(event)" class="space-y-4">
+                <!-- Meta Ad Library API -->
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-dark-700/50 border border-slate-200 dark:border-dark-600 space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                        <i data-lucide="key" class="w-3.5 h-3.5 text-blue-500"></i>
+                        <span>Meta Ad Library API Token</span>
+                    </label>
+                    <input type="password" id="setting-meta-token" placeholder="EAA..." class="w-full bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200">
+                    <p class="text-[11px] text-slate-400">Used to fetch real ads from <code>graph.facebook.com/v19.0/ads_archive</code> for PW, Unacademy, and Scaler.</p>
+                </div>
+
+                <!-- Google Ads Transparency -->
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-dark-700/50 border border-slate-200 dark:border-dark-600 space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                        <i data-lucide="globe" class="w-3.5 h-3.5 text-red-500"></i>
+                        <span>Google Ads API / Transparency Key</span>
+                    </label>
+                    <input type="text" id="setting-google-key" placeholder="AIzaSy..." class="w-full bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200">
+                </div>
+
+                <!-- Slack Webhook Section -->
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-dark-700/50 border border-slate-200 dark:border-dark-600 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                            <i data-lucide="hash" class="w-3.5 h-3.5 text-purple-500"></i>
+                            <span>Slack Incoming Webhook URL</span>
+                        </label>
+                        <a href="https://api.slack.com/messaging/webhooks" target="_blank" class="text-[11px] text-brand-600 dark:text-brand-400 hover:underline">
+                            How to get a Webhook URL ↗
+                        </a>
+                    </div>
+                    <input type="url" id="setting-slack-webhook" oninput="validateSlackInput()" placeholder="https://hooks.slack.com/services/your-webhook-token" class="w-full bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200">
+                    
+                    <div id="slack-input-warning" class="hidden text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-lg p-2 leading-relaxed">
+                        ⚠️ <strong>Warning:</strong> You entered a workspace link (e.g. <code>scalerinternal.slack.com</code>). An <strong>Incoming Webhook URL</strong> is required (starts with <code>https://hooks.slack.com/services/...</code>).
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="text-[11px] text-slate-400">Must start with <code>https://hooks.slack.com/services/</code></span>
+                        <button type="button" onclick="testSlackWebhookFromInput()" class="px-2.5 py-1 rounded text-xs font-semibold bg-brand-50 hover:bg-brand-100 text-brand-700 dark:bg-brand-600/20 dark:text-brand-300">
+                            Verify Webhook
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Email SMTP Section -->
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-dark-700/50 border border-slate-200 dark:border-dark-600 space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                        <i data-lucide="mail" class="w-3.5 h-3.5 text-cyan-500"></i>
+                        <span>Email SMTP & Recipients</span>
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="setting-smtp-host" placeholder="SMTP Host (e.g. smtp.gmail.com)" class="bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs">
+                        <input type="number" id="setting-smtp-port" placeholder="Port (e.g. 587)" value="587" class="bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="setting-smtp-user" placeholder="SMTP Username / Email" class="bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs">
+                        <input type="password" id="setting-smtp-pass" placeholder="SMTP Password" class="bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs">
+                    </div>
+                    <div>
+                        <label class="text-[11px] text-slate-400 block mb-0.5">Recipients (comma-separated)</label>
+                        <input type="text" id="setting-email-recipients" placeholder="team@company.com, marketing@company.com" class="w-full bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs">
+                    </div>
+                </div>
+
+                <!-- Scheduler Settings -->
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-dark-700/50 border border-slate-200 dark:border-dark-600 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Automated Weekly Cadence</label>
+                        <input type="checkbox" id="setting-schedule-enabled" class="rounded text-brand-600">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="setting-schedule-day" class="bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs">
+                            <option value="monday">Monday (Recommended)</option>
+                            <option value="tuesday">Tuesday</option>
+                            <option value="wednesday">Wednesday</option>
+                            <option value="thursday">Thursday</option>
+                            <option value="friday">Friday</option>
+                            <option value="saturday">Saturday</option>
+                            <option value="sunday">Sunday</option>
+                        </select>
+                        <input type="time" id="setting-schedule-time" value="09:00" class="bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-settings')" class="px-3.5 py-1.5 rounded-lg text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-dark-700">Cancel</button>
+                    <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white shadow-sm">Save Configuration</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Competitor Modal -->
+    <div id="modal-competitor" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeModal('modal-competitor')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1" id="modal-competitor-title">Add EdTech Competitor</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Add brands like upGrad, Simplilearn, Great Learning, Vedantu, GeeksforGeeks, etc.</p>
+
+            <form id="competitor-form" onsubmit="saveCompetitor(event)" class="space-y-3">
+                <input type="hidden" id="comp-form-id">
+                <div>
+                    <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Brand Name *</label>
+                    <input type="text" id="comp-form-name" required placeholder="e.g. upGrad or Vedantu" class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Website Domain</label>
+                    <input type="text" id="comp-form-domain" placeholder="e.g. upgrad.com" class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Industry / Niche</label>
+                    <input type="text" id="comp-form-industry" value="EdTech" class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Logo URL</label>
+                    <input type="url" id="comp-form-logo" placeholder="https://logo.clearbit.com/upgrad.com" class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200">
+                </div>
+
+                <div class="flex items-center justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-competitor')" class="px-3.5 py-1.5 rounded-lg text-xs text-slate-600 dark:text-slate-300">Cancel</button>
+                    <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white shadow-sm">Save Brand</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Manual Real Ad Import Modal (Strict Transparency) -->
+    <div id="modal-manual-import" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <button onclick="closeModal('modal-manual-import')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1 flex items-center space-x-1.5">
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
+                <span>Import Verified Real Advertisement</span>
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Paste genuine ad links and copy from Meta Ad Library or Google Ads Transparency Center.</p>
+
+            <form id="manual-import-form" onsubmit="submitManualAd(event)" class="space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Competitor *</label>
+                        <select id="import-comp-id" required class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Platform *</label>
+                        <select id="import-platform" class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200">
+                            <option value="meta">Meta (FB / Instagram)</option>
+                            <option value="google">Google Ads</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Ad Headline *</label>
+                    <input type="text" id="import-headline" required placeholder="e.g. Master Full Stack with IIT Roorkee Faculty" class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200">
+                </div>
+
+                <div>
+                    <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Ad Copy / Body Text</label>
+                    <textarea id="import-body" rows="2" placeholder="Full ad copy text..." class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">CTA Button</label>
+                        <input type="text" id="import-cta" placeholder="Enroll Now / Apply Now" class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Google Placement</label>
+                        <select id="import-google-placement" class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-2.5 py-1.5 text-xs">
+                            <option value="Standard Feed">Standard Feed (Meta)</option>
+                            <option value="Google Discover">Google Discover (Verified)</option>
+                            <option value="Demand Gen">Demand Gen</option>
+                            <option value="Search">Search</option>
+                            <option value="Display">Display</option>
+                            <option value="Google Ad – Placement Unknown">Google Ad – Placement Unknown</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Ad Library / Source URL *</label>
+                    <input type="url" id="import-url" required placeholder="https://www.facebook.com/ads/library/?id=..." class="w-full bg-slate-50 dark:bg-dark-700 border border-slate-200 dark:border-dark-600 rounded-lg px-3 py-1.5 text-xs">
+                </div>
+
+                <div class="flex items-center justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-manual-import')" class="px-3.5 py-1.5 rounded-lg text-xs text-slate-600 dark:text-slate-300">Cancel</button>
+                    <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm">Save Verified Ad</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Slack Block Kit Preview Modal -->
+    <div id="modal-slack-preview" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#1A1D21] border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <button onclick="closeModal('modal-slack-preview')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center space-x-2.5 mb-3 pb-3 border-b border-slate-700">
+                <div class="w-7 h-7 rounded bg-[#4A154B] flex items-center justify-center text-white">
+                    <i data-lucide="hash" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white">Slack Block Kit Visual Preview</h3>
+                    <p class="text-[11px] text-slate-400">Live Slack card simulator for #marketing-intelligence</p>
+                </div>
+            </div>
+            <div id="slack-preview-container" class="flex-1 overflow-y-auto space-y-3 bg-[#222529] p-4 rounded-xl border border-slate-700/60 font-sans text-xs text-slate-200">
+                <!-- Populated dynamically via JS -->
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-700 flex justify-between items-center">
+                <span class="text-xs text-slate-400">Validated Block Kit payload</span>
+                <button onclick="dispatchToSlack()" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#4A154B] hover:bg-[#611f69] text-white">
+                    Post to Live Slack 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email HTML Preview Modal -->
+    <div id="modal-email-preview" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-dark-800 border border-slate-200 dark:border-dark-600 rounded-2xl max-w-3xl w-full p-6 shadow-2xl relative max-h-[92vh] flex flex-col">
+            <button onclick="closeModal('modal-email-preview')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center space-x-2.5 mb-3 pb-3 border-b border-slate-200 dark:border-dark-600">
+                <div class="w-7 h-7 rounded bg-indigo-600 flex items-center justify-center text-white">
+                    <i data-lucide="mail" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white">HTML Email Newsletter Preview</h3>
+                    <p class="text-[11px] text-slate-400">Responsive newsletter format delivered via SMTP</p>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto rounded-xl border border-slate-200 dark:border-dark-600 bg-slate-50">
+                <iframe id="email-preview-iframe" class="w-full h-[60vh] border-0 rounded-xl" src="/api/notifications/preview-email"></iframe>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-200 dark:border-dark-600 flex justify-between items-center">
+                <span class="text-xs text-slate-400">Ready to deliver to configured distribution list</span>
+                <button onclick="dispatchToEmail()" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white">
+                    Send Email Digest 📧
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- Application Controller Script -->
+    <script src="/js/app.js"></script>
+</body>
+</html>

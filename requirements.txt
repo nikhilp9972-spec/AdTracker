@@ -1,0 +1,6 @@
+# Core dependencies (requests is already installed or can be installed)
+requests>=2.31.0
+
+# Optional LLM providers
+openai>=1.10.0
+google-generativeai>=0.4.0
