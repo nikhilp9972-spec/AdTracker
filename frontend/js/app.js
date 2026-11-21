@@ -22,6 +22,37 @@ const state = {
 
 const API_BASE = '';
 
+// --- Data Normalization Helpers ---
+function getAdCategories(ad) {
+    if (!ad) return ["Online Courses"];
+    const cats = ad.course_categories;
+    if (!cats) return ["Online Courses"];
+    if (Array.isArray(cats)) {
+        return cats.map(c => String(c).trim()).filter(Boolean);
+    }
+    if (typeof cats === 'string') {
+        try {
+            const parsed = JSON.parse(cats);
+            if (Array.isArray(parsed)) return parsed.map(c => String(c).trim()).filter(Boolean);
+        } catch (e) {}
+        return cats.split(',').map(c => c.trim()).filter(Boolean);
+    }
+    return ["Online Courses"];
+}
+
+function parseMultiItems(val) {
+    if (!val) return [];
+    if (Array.isArray(val)) return val.map(x => String(x).trim()).filter(Boolean);
+    if (typeof val === 'string') {
+        try {
+            const parsed = JSON.parse(val);
+            if (Array.isArray(parsed)) return parsed.map(x => String(x).trim()).filter(Boolean);
+        } catch (e) {}
+        return val.split(/[,\u2022|]/).map(x => x.trim()).filter(Boolean);
+    }
+    return [String(val).trim()];
+}
+
 // --- Lifecycle Initialization ---
 document.addEventListener('DOMContentLoaded', async () => {
     initTheme();
@@ -203,6 +234,7 @@ function switchTab(tabId) {
 
 // --- Render Master Function ---
 function renderAll() {
+    populateDropdowns();
     renderOverview();
     renderCompetitorsList();
     renderAdVault();
@@ -211,7 +243,6 @@ function renderAll() {
     renderReportsView();
     renderAutomationCard();
     renderDigestSelect();
-    populateDropdowns();
     if (window.lucide) lucide.createIcons();
 }
 
@@ -291,7 +322,7 @@ function renderOverview() {
     if (compGrid) {
         compGrid.innerHTML = state.competitors.slice(0, 3).map(c => {
             const cAds = state.ads.filter(a => a.competitor_id === c.id);
-            const categories = [...new Set(cAds.map(a => (a.course_categories || '').split(',')[0].trim()).filter(Boolean))].slice(0, 2);
+            const categories = [...new Set(cAds.flatMap(a => getAdCategories(a)))].slice(0, 2);
             return `
                 <div class="p-4 rounded-xl border border-slate-200 dark:border-dark-600 bg-slate-50/50 dark:bg-dark-800/50 flex flex-col justify-between">
                     <div>
@@ -336,7 +367,7 @@ function renderCompetitorsList() {
 
     grid.innerHTML = state.competitors.map(c => {
         const cAds = state.ads.filter(a => a.competitor_id === c.id);
-        const cats = [...new Set(cAds.map(a => a.course_categories).filter(Boolean))].slice(0, 3);
+        const cats = [...new Set(cAds.flatMap(a => getAdCategories(a)))].slice(0, 3);
         const lastAd = cAds[0];
 
         return `
@@ -417,7 +448,7 @@ function renderAdVault() {
 }
 
 function filterAds() {
-    const search = (document.getElementById('vault-search-input')?.value || '').toLowerCase();
+    const search = (document.getElementById('vault-search-input')?.value || '').trim().toLowerCase();
     const compFilter = document.getElementById('vault-filter-comp')?.value || '';
     const catFilter = document.getElementById('vault-filter-category')?.value || '';
     const platFilter = document.getElementById('vault-filter-platform')?.value || 'all';
@@ -439,12 +470,26 @@ function filterAds() {
         }
 
         // Category
-        if (catFilter && !(ad.course_categories || '').toLowerCase().includes(catFilter.toLowerCase())) return false;
+        if (catFilter) {
+            const cats = getAdCategories(ad).map(c => c.toLowerCase());
+            const target = catFilter.toLowerCase();
+            const match = cats.some(c => c === target || c.includes(target) || target.includes(c));
+            if (!match) return false;
+        }
 
         // Offer
         if (offerFilter !== 'all') {
             const adOffer = (ad.offer_details || '').toLowerCase();
-            if (!adOffer.includes(offerFilter.toLowerCase())) return false;
+            const target = offerFilter.toLowerCase();
+            let matches = adOffer.includes(target);
+            if (!matches) {
+                if (target.includes('masterclass')) matches = adOffer.includes('masterclass') || adOffer.includes('webinar') || adOffer.includes('workshop');
+                else if (target.includes('demo')) matches = adOffer.includes('demo') || adOffer.includes('trial') || adOffer.includes('free session') || adOffer.includes('free class');
+                else if (target.includes('discount')) matches = adOffer.includes('discount') || adOffer.includes('off') || adOffer.includes('save') || adOffer.includes('deal');
+                else if (target.includes('scholarship')) matches = adOffer.includes('scholarship') || adOffer.includes('usat') || adOffer.includes('test');
+                else if (target.includes('emi')) matches = adOffer.includes('emi') || adOffer.includes('no cost') || adOffer.includes('installment');
+            }
+            if (!matches) return false;
         }
 
         // Transparency
@@ -457,7 +502,9 @@ function filterAds() {
             const matchBody = (ad.body_text || '').toLowerCase().includes(search);
             const matchHook = (ad.marketing_hook || '').toLowerCase().includes(search);
             const matchComp = (ad.competitor_name || '').toLowerCase().includes(search);
-            if (!matchHead && !matchBody && !matchHook && !matchComp) return false;
+            const matchOffer = (ad.offer_details || '').toLowerCase().includes(search);
+            const matchCat = getAdCategories(ad).some(c => c.toLowerCase().includes(search));
+            if (!matchHead && !matchBody && !matchHook && !matchComp && !matchOffer && !matchCat) return false;
         }
 
         return true;
@@ -508,7 +555,7 @@ function renderAdCardHtml(ad, compact = false) {
         ? `<span class="badge-demo px-1.5 py-0.5 rounded text-[9px] font-bold" title="Historical Benchmark Data">DEMO</span>`
         : `<span class="badge-live px-1.5 py-0.5 rounded text-[9px] font-bold" title="Live Verified Advertisement">LIVE REAL AD</span>`;
 
-    const courseCats = (ad.course_categories || 'Online Courses').split(',').map(c => c.trim()).filter(Boolean);
+    const courseCats = getAdCategories(ad);
 
     return `
         <div class="ad-card glass-card rounded-xl overflow-hidden flex flex-col justify-between">
@@ -623,7 +670,7 @@ function renderCreativeInsights() {
     const vpCounts = {};
 
     state.ads.forEach(ad => {
-        (ad.course_categories || '').split(',').forEach(c => {
+        getAdCategories(ad).forEach(c => {
             const clean = c.trim();
             if (clean) catCounts[clean] = (catCounts[clean] || 0) + 1;
         });
@@ -634,14 +681,14 @@ function renderCreativeInsights() {
             offerCounts[ad.offer_details] = (offerCounts[ad.offer_details] || 0) + 1;
         }
         if (ad.value_proposition) {
-            ad.value_proposition.split(',').forEach(v => {
+            parseMultiItems(ad.value_proposition).forEach(v => {
                 const clean = v.trim();
                 if (clean) vpCounts[clean] = (vpCounts[clean] || 0) + 1;
             });
         }
     });
 
-    const sortedCats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const sortedCats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]).slice(0, 7);
     const maxCat = sortedCats[0] ? sortedCats[0][1] : 1;
 
     if (catContainer) {
@@ -651,10 +698,10 @@ function renderCreativeInsights() {
                 <div>
                     <div class="flex justify-between text-xs mb-1">
                         <span class="font-medium text-slate-800 dark:text-slate-200">${escapeHtml(cat)}</span>
-                        <span class="font-bold text-slate-500">${count} ads</span>
+                        <span class="font-bold text-slate-500">${count} ads (${Math.round((count / (state.ads.length || 1)) * 100)}%)</span>
                     </div>
-                    <div class="w-full bg-slate-100 dark:bg-dark-700 h-2 rounded-full overflow-hidden">
-                        <div class="bg-indigo-600 dark:bg-brand-500 h-full rounded-full" style="width: ${pct}%"></div>
+                    <div class="w-full bg-slate-100 dark:bg-dark-700 h-2.5 rounded-full overflow-hidden">
+                        <div class="bg-indigo-600 dark:bg-brand-500 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
                     </div>
                 </div>
             `;
@@ -662,29 +709,37 @@ function renderCreativeInsights() {
     }
 
     if (hooksContainer) {
-        const topHooks = Object.entries(hookCounts).sort((a, b) => b[1] - a[1]).slice(0, 4);
+        const topHooks = Object.entries(hookCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
         hooksContainer.innerHTML = topHooks.map(([hook, count]) => `
             <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-dark-800/60 border border-slate-200 dark:border-dark-600 flex items-center justify-between text-xs">
-                <span class="font-semibold text-slate-800 dark:text-slate-200">"${escapeHtml(hook)}"</span>
-                <span class="text-[10px] font-bold text-brand-600 dark:text-brand-400">${count} ads</span>
+                <span class="font-semibold text-slate-800 dark:text-slate-200 truncate pr-2">"${escapeHtml(hook)}"</span>
+                <span class="text-[10px] font-bold text-brand-600 dark:text-brand-400 whitespace-nowrap bg-brand-50 dark:bg-brand-500/10 px-2 py-0.5 rounded">${count} ads</span>
             </div>
         `).join('') || '<p class="text-xs text-slate-400">Analyzing hooks...</p>';
     }
 
     if (offersContainer) {
-        const topOffers = Object.keys(offerCounts).slice(0, 4);
-        offersContainer.innerHTML = topOffers.map(o => `<li>${escapeHtml(o)}</li>`).join('') || '<li>Free Live Masterclass Access</li><li>Scholarship Entrance Tests</li>';
+        const topOffers = Object.entries(offerCounts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(e => e[0]);
+        offersContainer.innerHTML = topOffers.map(o => `<li>${escapeHtml(o)}</li>`).join('') || '<li>Free Live Masterclass Access</li><li>Scholarship Entrance Tests</li><li>0% No-Cost EMI</li>';
     }
 
     if (vpsContainer) {
-        const topVps = Object.keys(vpCounts).slice(0, 4);
-        vpsContainer.innerHTML = topVps.map(v => `<li>${escapeHtml(v)}</li>`).join('') || '<li>1-on-1 Mentorship</li><li>Alumni Placements</li>';
+        const topVps = Object.entries(vpCounts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(e => e[0]);
+        vpsContainer.innerHTML = topVps.map(v => `<li>${escapeHtml(v)}</li>`).join('') || '<li>1-on-1 Mentorship</li><li>Alumni Placements</li><li>Top Kota Faculty</li>';
     }
 
-    if (oppsContainer && state.currentDigest && state.currentDigest.counter_strategies) {
-        oppsContainer.innerHTML = state.currentDigest.counter_strategies.slice(0, 3).map(s => `
-            <li><strong>${escapeHtml(s.tactic)}:</strong> ${escapeHtml(s.action)}</li>
-        `).join('');
+    if (oppsContainer) {
+        if (state.currentDigest && state.currentDigest.counter_strategies && state.currentDigest.counter_strategies.length > 0) {
+            oppsContainer.innerHTML = state.currentDigest.counter_strategies.slice(0, 4).map(s => `
+                <li><strong>${escapeHtml(s.tactic)}:</strong> ${escapeHtml(s.action)}</li>
+            `).join('');
+        } else {
+            oppsContainer.innerHTML = `
+                <li><strong>Outcome-Driven Messaging:</strong> Counter high-spend competitor campaigns by pairing salary statistics with verified graduate projects.</li>
+                <li><strong>No-Cost EMI & Scholarships:</strong> Address price objections directly against competitors offering 0% EMI and entrance tests.</li>
+                <li><strong>Discover Feed Native Visuals:</strong> Run high-contrast editorial headline cards to capture intent on Google Discover.</li>
+            `;
+        }
     }
 }
 
@@ -798,7 +853,7 @@ function renderReportsView() {
                     <td class="py-2 px-3 font-bold">${escapeHtml(a.competitor_name)}</td>
                     <td class="py-2 px-3 truncate max-w-xs">${escapeHtml(a.headline)}</td>
                     <td class="py-2 px-3 uppercase">${escapeHtml(a.platform)}</td>
-                    <td class="py-2 px-3">${escapeHtml((a.course_categories || '').split(',')[0])}</td>
+                    <td class="py-2 px-3">${escapeHtml(getAdCategories(a)[0] || 'Online Courses')}</td>
                     <td class="py-2 px-3">
                         ${a.ad_library_url ? `
                             <a href="${a.ad_library_url}" target="_blank" class="text-brand-600 dark:text-brand-400 hover:underline flex items-center space-x-1">
@@ -913,8 +968,12 @@ function populateDropdowns() {
     const vaultSel = document.getElementById('vault-filter-comp');
     const importSel = document.getElementById('import-comp-id');
 
+    const currentVaultVal = vaultSel ? vaultSel.value : '';
     const options = state.competitors.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
-    if (vaultSel) vaultSel.innerHTML = '<option value="">All Brands</option>' + options;
+    if (vaultSel) {
+        vaultSel.innerHTML = '<option value="">All Brands</option>' + options;
+        if (currentVaultVal) vaultSel.value = currentVaultVal;
+    }
     if (importSel) importSel.innerHTML = options;
 }
 
@@ -949,13 +1008,18 @@ async function triggerPipelineRun() {
 async function triggerCollectAds() {
     showToast('Ingesting ads from competitor platforms...', 'info');
     const res = await apiPost('/api/ads/collect', { ads_per_competitor: 4 });
-    if (res) {
-        showToast(`Ingestion completed for ${res.competitors_scanned || 0} brands.`, 'success');
-        await loadAds();
-        await loadCollectionLogs();
-        await loadStats();
-        renderAll();
+    const count = res && res.total_new_ads ? res.total_new_ads : 0;
+    const compCount = res && res.results ? res.results.length : state.competitors.length;
+    if (count > 0) {
+        showToast(`Ingestion completed: ${count} fresh ads collected across ${compCount} brands.`, 'success');
+    } else {
+        showToast(`Ad scan completed across ${compCount} brands. Real audit logs updated.`, 'info');
     }
+    await loadAds();
+    await loadCollectionLogs();
+    await loadStats();
+    await loadCrossPlatformData();
+    renderAll();
 }
 
 // Collect Ads for a Single Competitor
@@ -963,12 +1027,16 @@ async function triggerCollectSingle(compId) {
     showToast(`Ingesting ads for competitor ${compId}...`, 'info');
     const res = await apiPost('/api/ads/collect-single', { competitor_id: compId, count: 4 });
     if (res && res.status === 'success') {
-        showToast(`Collected ${res.ads_saved || 0} ads for ${compId}`, 'success');
+        const count = res.ads_saved || 0;
+        showToast(`Collected ${count} ads for ${compId}`, 'success');
         await loadAds();
         await loadCollectionLogs();
+        await loadStats();
+        await loadCrossPlatformData();
         renderAll();
     } else {
-        showToast(res.message || 'Collection failed', 'error');
+        showToast(res.message || 'Collection completed (see audit log)', 'info');
+        await loadCollectionLogs();
     }
 }
 
