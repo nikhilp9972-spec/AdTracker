@@ -6,6 +6,7 @@ Zero-dependency, multi-threaded REST API server with frontend static file servin
 import os
 import sys
 import json
+import socket
 import mimetypes
 from urllib.parse import urlparse, parse_qs
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
@@ -390,10 +391,25 @@ def start_server():
     # 3. Start Background Scheduler
     scheduler_instance.start()
 
-    # 4. Start HTTP Server
-    server_address = (HOST, PORT)
-    httpd = ThreadingHTTPServer(server_address, AdTrackerRequestHandler)
-    print(f"[Server] Serving Web UI & REST API at http://localhost:{PORT}")
+    # 4. Start HTTP Server (Dual-stack IPv4 & IPv6 support so localhost and 127.0.0.1 both work seamlessly)
+    httpd = None
+    try:
+        class DualStackThreadingServer(ThreadingHTTPServer):
+            address_family = socket.AF_INET6
+
+            def server_bind(self):
+                try:
+                    self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
+                except Exception:
+                    pass
+                super().server_bind()
+
+        httpd = DualStackThreadingServer(("::", PORT), AdTrackerRequestHandler)
+    except Exception:
+        server_address = (HOST, PORT)
+        httpd = ThreadingHTTPServer(server_address, AdTrackerRequestHandler)
+
+    print(f"[Server] Serving Web UI & REST API at http://localhost:{PORT} and http://127.0.0.1:{PORT}")
     print(f"[Server] Ready for marketing team requests. Press Ctrl+C to terminate.")
 
     try:
